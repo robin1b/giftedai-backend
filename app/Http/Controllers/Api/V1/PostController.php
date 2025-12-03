@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePostRequest;
 use App\Models\BlogPosts;
 use Illuminate\Http\Request;
 
@@ -19,12 +20,9 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $data= $request -> validate([
-            'title' => '|required|string',
-            'content' => 'sometimes|required|string',
-        ]);   
+        $data= $request -> validated();   
         $data["author_id"] = 1 ;
        $blogPost = BlogPosts::create($data);
         
@@ -44,10 +42,7 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request -> validate([
-            'title' => '|required|string',
-            'content' => 'sometimes|required|string',
-        ]);
+        $request -> validated();
     }
 
     /**
