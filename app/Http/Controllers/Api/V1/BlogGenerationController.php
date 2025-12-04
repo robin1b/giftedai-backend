@@ -14,12 +14,16 @@ class BlogGenerationController extends Controller
     /**
      * 1. Generate AI blog content based on user input
      */
+
     public function index()
     {
         $generators = BlogGenerator::where('user_id', request()->user()->id)->paginate();
         return BlogGeneratorResource::collection($generators);
     }
 
+    /**
+     * Generate blog content using OpenAI
+     */
     public function generate(Request $request)
     {
         $validated = $request->validate([

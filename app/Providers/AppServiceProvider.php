@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -31,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         });
         RateLimiter::for('ai-generate', function (Request $request) {
             return Limit::perDay(10)->by($request->user()?->id ?: $request->ip());
+        });
+        Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
+            $openApi->secure(
+                SecurityScheme::http('bearer', 'BearerAuth')
+            );
         });
     }
 }
