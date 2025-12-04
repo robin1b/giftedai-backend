@@ -14,11 +14,12 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     });
 
     Route::prefix('v1')->group(function () {
+
         Route::apiResource('/posts', PostController::class);
         Route::get('/blog-generations', [BlogGenerationController::class, 'index']);
-        Route::post('/generate', [BlogGenerationController::class, 'generate']);
+        Route::post('/generate', [BlogGenerationController::class, 'generate'])
+            ->middleware('throttle:ai-generate');
         Route::post('/generate/save', [BlogGenerationController::class, 'saveAsBlogPost']);
     });
 });
-
 require __DIR__ . '/auth.php';

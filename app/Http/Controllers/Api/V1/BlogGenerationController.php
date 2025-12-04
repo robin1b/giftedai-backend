@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BlogGeneratorResource;
 use App\Models\BlogGenerator;
 use App\Models\BlogPosts;
 use Illuminate\Http\Request;
@@ -15,7 +16,8 @@ class BlogGenerationController extends Controller
      */
     public function index()
     {
-        return BlogGenerator::where('user_id', request()->user()->id)->paginate();
+        $generators = BlogGenerator::where('user_id', request()->user()->id)->paginate();
+        return BlogGeneratorResource::collection($generators);
     }
 
     public function generate(Request $request)
@@ -35,7 +37,7 @@ class BlogGenerationController extends Controller
             'user_id' => $request->user()->id,
             'title' => $validated['title'] ?? null,
             'tone' => $validated['tone'] ?? null,
-            'language' => $validated['language'] ?? 'en',
+            'language' => $validated['language'] ?? 'nl',
             'word_count' => $validated['word_count'] ?? null,
             'audience' => $validated['audience'] ?? null,
             'occasion' => $validated['occasion'] ?? null,
@@ -44,7 +46,7 @@ class BlogGenerationController extends Controller
         ]);
 
         // Create AI prompt dynamically
-        $prompt = $this->buildPrompt($validated);
+        $prompt = $this->buildPrompt($generator);
 
         // Store prompt into DB
         $generator->update(['prompt' => $prompt]);
@@ -69,10 +71,7 @@ class BlogGenerationController extends Controller
             'status' => 'completed'
         ]);
 
-        return response()->json([
-            'generator_id' => $generator->id,
-            'generated_text' => $text,
-        ]);
+        return (new BlogGeneratorResource($generator))->additional(['message' => 'Blog content generated successfully.']);
     }
 
     /**
@@ -107,15 +106,15 @@ class BlogGenerationController extends Controller
     /**
      * Builds the OpenAI prompt from user input
      */
-    private function buildPrompt(array $data): string
+    private function buildPrompt(BlogGenerator $generator): string
     {
-        $tags = isset($data['tags']) ? implode(', ', $data['tags']) : '';
-        $title = $data['title'] ?? 'Untitled';
-        $audience = $data['audience'] ?? 'general readers';
-        $occasion = $data['occasion'] ?? 'none';
-        $tone = $data['tone'] ?? 'neutral';
-        $language = $data['language'] ?? 'en';
-        $wordCount = $data['word_count'] ?? '800';
+        $title = $generator->title ?? 'Untitled';
+        $tone = $generator->tone ?? 'neutral';
+        $language = $generator->language ?? 'nl';
+        $wordCount = $generator->word_count ?? 800;
+        $audience = $generator->audience ?? 'general readers';
+        $occasion = $generator->occasion ?? 'none';
+        $tags = implode(', ', $generator->tags ?? []);
 
         return "
 Write a full blog post.
