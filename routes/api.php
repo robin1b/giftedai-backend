@@ -22,4 +22,7 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::post('/generate/save', [BlogGenerationController::class, 'saveAsBlogPost']);
     });
 });
+Route::prefix('v1')->group(function () {
+    Route::get('/public-posts', [PostController::class, 'publicIndex']);
+});
 require __DIR__ . '/auth.php';

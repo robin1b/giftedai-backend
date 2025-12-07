@@ -67,4 +67,15 @@ class PostController extends Controller
         $post->delete();
         return response()->noContent();
     }
+    /**
+     * Display a listing of public posts.
+     */
+    public function publicIndex()
+    {
+        $posts = BlogPosts::where('is_published', true)
+            ->latest()
+            ->paginate(10);
+
+        return PostResource::collection($posts);
+    }
 }
