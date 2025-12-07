@@ -81,17 +81,14 @@ class PostController extends Controller
      */
     public function publicIndex()
     {
-        $posts = BlogPosts::latest()->paginate(10);
-
-
-        return PostResource::collection($posts);
+        return PostResource::collection(BlogPosts::latest()->get());
     }
+
     /**
      * Display the specified public post.
      */
     public function publicShow($id)
     {
-        $post = BlogPosts::findOrFail($id);
-        return new PostResource($post);
+        return new PostResource(BlogPosts::findOrFail($id));
     }
 }
