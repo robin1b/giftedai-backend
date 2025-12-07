@@ -24,7 +24,7 @@ class StorePostRequest extends FormRequest
         return [
             'title' => '|required|string|max:255|min:5',
             'content' => 'sometimes|required|string',
-            'image' => 'sometimes|image|max:5120',
+            'image' => 'nullable|image|max:5120',
             // 'tags' => 'sometimes|array',
             // 'tags.*' => 'string'
         ];
