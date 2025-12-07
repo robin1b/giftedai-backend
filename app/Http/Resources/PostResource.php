@@ -21,6 +21,8 @@ class PostResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'author' => new UserReasource($this->author),
+            'image' => $this->image ? asset('storage/' . $this->image) : null,
+
         ];
     }
 }

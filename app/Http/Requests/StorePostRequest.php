@@ -24,6 +24,7 @@ class StorePostRequest extends FormRequest
         return [
             'title' => '|required|string|max:255|min:5',
             'content' => 'sometimes|required|string',
+            'image' => 'sometimes|image|max:5120',
             // 'tags' => 'sometimes|array',
             // 'tags.*' => 'string'
         ];
@@ -35,7 +36,7 @@ class StorePostRequest extends FormRequest
             'title.required' => 'Titel is verplicht.',
             'title.string' => 'Titel moet een valid string zijn.',
             'title.max' => 'Titel mag niet langer zijn dan :max tekens.',
-            'title.min' => 'Titel moet minstens :min tekens lang zijn.',    
+            'title.min' => 'Titel moet minstens :min tekens lang zijn.',
             'content.required' => 'de contentfield is verplicht.',
             'content.string' => 'The content moet een valid string string.'
         ];

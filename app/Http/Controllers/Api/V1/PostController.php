@@ -8,6 +8,8 @@ use App\Http\Resources\PostResource;
 use App\Models\BlogPosts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class PostController extends Controller
 {
@@ -28,6 +30,9 @@ class PostController extends Controller
     {
         $data = $request->validated();
         $data['author_id'] = $request->user()->id;
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
         $blogPost = BlogPosts::create($data);
         return response()->json(new PostResource($blogPost), 201);
     }
@@ -46,18 +51,23 @@ class PostController extends Controller
      */
     public function update(Request $request, BlogPosts $post)
     {
-
         abort_if(Auth::id() !== $post->author_id, 403, 'Unauthorized');
-        $data = $request->validate(
-            [
-                'title' => 'sometimes|required|string|max:255',
-                'content' => 'sometimes|required|string',
-            ]
-        );
+
+        $data = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'content' => 'sometimes|required|string',
+            'image' => 'nullable|image|max:5120', // <-- afbeelding niet verplicht
+        ]);
+
+        if ($request->hasFile('image')) {
+            // gewoon nieuwe image opslaan, oude laten we voorlopig staan
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
+
         $post->update($data);
+
         return response()->json(new PostResource($post));
     }
-
     /**
      * Remove the specified resource from storage.
      */

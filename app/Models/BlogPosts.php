@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BlogPosts extends Model
 {
-    protected $fillable = ['title', 'content', 'author_id'];
+    protected $fillable = ['title', 'content', 'author_id', 'image'];
 
     public function author(): BelongsTo
-        {
-            return $this->belongsTo(User::class, 'author_id');
-        }
-    
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
 }
-
