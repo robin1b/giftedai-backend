@@ -60,7 +60,6 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            // gewoon nieuwe image opslaan, oude laten we voorlopig staan
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
@@ -86,5 +85,13 @@ class PostController extends Controller
 
 
         return PostResource::collection($posts);
+    }
+    /**
+     * Display the specified public post.
+     */
+    public function publicShow($id)
+    {
+        $post = BlogPosts::findOrFail($id);
+        return new PostResource($post);
     }
 }

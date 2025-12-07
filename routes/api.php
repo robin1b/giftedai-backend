@@ -24,5 +24,6 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 });
 Route::prefix('v1')->group(function () {
     Route::get('/public-posts', [PostController::class, 'publicIndex']);
+    Route::get('/public-posts/{id}', [PostController::class, 'publicShow']);
 });
 require __DIR__ . '/auth.php';
