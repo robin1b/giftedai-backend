@@ -72,9 +72,8 @@ class PostController extends Controller
      */
     public function publicIndex()
     {
-        $posts = BlogPosts::where('is_published', true)
-            ->latest()
-            ->paginate(10);
+        $posts = BlogPosts::latest()->paginate(10);
+
 
         return PostResource::collection($posts);
     }
